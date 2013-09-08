@@ -2,36 +2,34 @@
     "name": "mimelib",
     "description": "MIME functions to encode/decode e-mails etc.",
     "version": "0.2.13-dev",
-    "author" : "Andris Reinman",
-    "homepage":"http://github.com/andris9/mimelib",
-    "maintainers":[
-        {
-            "name":"andris",
-            "email":"andris@node.ee"
-        }
-    ],
+    "author": "Andris Reinman",
+    "homepage": "http://github.com/andris9/mimelib",
+    "maintainers": [{
+        "name": "andris",
+        "email": "andris@node.ee"
+    }],
     "contributors": [
-      "Swift <theycallmeswift@gmail.com>"
+        "Swift <theycallmeswift@gmail.com>"
     ],
-    "repository" : {
-        "type" : "git",
-        "url" : "http://github.com/andris9/mimelib.git"
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/andris9/mimelib.git"
     },
-    "scripts":{
+    "scripts": {
         "test": "nodeunit test/"
     },
-    "main" : "index.js",
-    "licenses" : [
-        {
-            "type": "MIT",
-            "url": "http://github.com/andris9/mimelib/blob/master/LICENSE"
-        }
-    ],
+    "main": "index.js",
+    "licenses": [{
+        "type": "MIT",
+        "url": "http://github.com/andris9/mimelib/blob/master/LICENSE"
+    }],
     "dependencies": {
-        "encoding": "~0.1",
-        "addressparser": "~0.1"
+        "addressparser": "~0.1",
+        "amdefine": ">=0.0.8",
+        "buffer-browserify": "https://github.com/whiteout-io/buffer-browserify/tarball/master",
+        "encoding": "https://github.com/whiteout-io/encoding/tarball/master"
     },
-    "devDependencies":{
+    "devDependencies": {
         "nodeunit": "*"
     },
     "keywords": ["e-mail", "mime", "email"]
