@@ -1,6 +1,6 @@
 # mimelib
 
-*mimelib* is a collection of useful functions to deal with mime-encoded data.
+This fork of *mimelib* is a browserified AMD port of (Andris)[https://github.com/andris9/mimelib]' collection of useful functions to deal with mime-encoded data.
 
 ## Installation
 
@@ -11,6 +11,10 @@ Install with *npm*
 ## Usage
 
     var mimelib = require("mimelib");
+
+## Known issues
+
+There are some bugs in the browserified version if this library.
 
 ## Reference
 
