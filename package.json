@@ -27,7 +27,7 @@
         "addressparser": "~0.1",
         "amdefine": ">=0.0.8",
         "buffer-browserify": "https://github.com/whiteout-io/buffer-browserify/tarball/master",
-        "encoding": "https://github.com/whiteout-io/encoding/tarball/master"
+        "encoding": "https://github.com/whiteout-io/encoding/tarball/amd"
     },
     "devDependencies": {
         "nodeunit": "*"
