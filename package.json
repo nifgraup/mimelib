@@ -18,7 +18,7 @@
     "scripts": {
         "test": "nodeunit test/"
     },
-    "main": "index.js",
+    "main": "mimelib.js",
     "licenses": [{
         "type": "MIT",
         "url": "http://github.com/andris9/mimelib/blob/master/LICENSE"
@@ -26,7 +26,7 @@
     "dependencies": {
         "addressparser": "~0.1",
         "amdefine": ">=0.0.8",
-        "buffer-browserify": "https://github.com/whiteout-io/buffer-browserify/tarball/master",
+        "node-shims": "https://github.com/whiteout-io/node-shims/tarball/master",
         "encoding": "https://github.com/whiteout-io/encoding/tarball/amd"
     },
     "devDependencies": {
