@@ -1,5 +1,5 @@
 var testCase = require('nodeunit').testCase,
-    mimelib = require("../mimelib");
+    mimelib = require("..");
 
 exports["Quoted printable"] = {
     "Encode short string": function(test){
