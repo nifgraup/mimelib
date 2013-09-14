@@ -24,7 +24,7 @@
         "url": "http://github.com/andris9/mimelib/blob/master/LICENSE"
     }],
     "dependencies": {
-        "addressparser": "~0.1",
+        "addressparser": "https://github.com/whiteout-io/addressparser/tarball/amd",
         "amdefine": ">=0.0.8",
         "node-shims": "https://github.com/whiteout-io/node-shims/tarball/master",
         "encoding": "https://github.com/whiteout-io/encoding/tarball/amd"
