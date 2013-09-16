@@ -9,189 +9,7 @@ define(function(require) {
         Buffer = require('node-shims').Buffer.Buffer,
         mimeFunctions;
 
-    /**
-     * Folds a long line according to the RFC 5322 http://tools.ietf.org/html/rfc5322#section-2.1.1
-     *
-     * @param {String} str Mime string that might need folding
-     * @param {Number} [maxLength=76] max length for a line
-     * @param {Boolean} [foldAnywhere] If true, can fold at any location (ie. in base64)
-     * @param {Boolean} [afterSpace] If true fold after the space (default is before)
-     * @return {String} Folded string
-     */
-
-    function foldLine(str, maxLength, foldAnywhere, afterSpace, lineMargin) {
-        if (foldAnywhere) {
-            return addBase64SoftLinebreaks(str, maxLength || 76);
-        }
-        return mimeFunctions.foldLine(str, maxLength, !! afterSpace, lineMargin);
-    }
-
-    /**
-     * Encodes a string into mime encoded word format http://en.wikipedia.org/wiki/MIME#Encoded-Word
-     *
-     * @param {String} str String to be encoded
-     * @param {String} encoding Encoding Q for quoted printable or B for base64
-     * @param {String} [charset="UTF-8"] Charset to be used
-     * @param {Number} [maxLength] If set, split on maxLength
-     * @return {String} Mime word encoded string
-     */
-
-    function encodeMimeWord(str, encoding, charset, maxLength) {
-        return module.exports.mimeFunctions.encodeMimeWord(str, encoding, maxLength || 0, charset);
-    }
-
-    /**
-     * Encodes need parts of a string to mime word format
-     *
-     * @param {String} str String to be encoded
-     * @param {String} encoding Encoding Q for quoted printable or B for base64
-     * @param {Number} [maxLength] If set, split on maxLength
-     * @param {String} [charset="UTF-8"] Charset to be used
-     * @return {String} String with possible mime word encoded parts
-     */
-
-    function encodeMimeWords(str, encoding, maxLength, charset) {
-        return module.exports.mimeFunctions.encodeMimeWords(str, encoding, maxLength || 0, charset);
-    }
-
-    /**
-     * Decodes a string from mime encoded word
-     *
-     * @param {String} str Mime word encoded string
-     * @return {String} Decoded string
-     */
-
-    function decodeMimeWord(str) {
-        return module.exports.mimeFunctions.decodeMimeWord(str).toString("utf-8");
-    }
-
-    /**
-     * Decodes all mime words from a string to an unencoded string
-     *
-     * @param {String} str String that may include mime words
-     * @return {String} Unencoded string
-     */
-
-    function parseMimeWords(str) {
-        return module.exports.mimeFunctions.decodeMimeWords(str).toString("utf-8");
-    }
-
-    /**
-     * Encodes a string into Quoted-printable format. Maximum line length for the
-     * encoded string is always 76+2 bytes
-     *
-     * @param {String} str String to be encoded into Quoted-printable
-     * @param {Boolean} [mimeWord] legacy parameter, not used
-     * @param {String} [charset="UTF-8"] Destination charset
-     * @return {String} Quoted printable encoded string
-     */
-
-    function encodeQuotedPrintable(str, mimeWord, charset) {
-        if (typeof mimeWord == "string" && !charset) {
-            charset = mimeWord;
-            mimeWord = undefined;
-        }
-        return module.exports.mimeFunctions.encodeQuotedPrintable(str, charset);
-    }
-
-    /**
-     * Decodes a string from Quoted-printable format
-     *
-     * @param {String} str String to be decoded from Quoted-printable
-     * @param {Boolean} [mimeWord] legacy parameter, not used
-     * @param {String} [charset="UTF-8"] Source charset
-     * @return {String} Decoded string
-     */
-
-    function decodeQuotedPrintable(str, mimeWord, charset) {
-        if (typeof mimeWord == "string" && !charset) {
-            charset = mimeWord;
-            mimeWord = undefined;
-        }
-        charset = (charset || "").toString().toUpperCase().trim();
-        var decodedString = module.exports.mimeFunctions.decodeQuotedPrintable(str, "utf-8", charset);
-        return charset == "BINARY" ? decodedString : decodedString.toString("utf-8");
-    }
-
-    /**
-     * Encodes a string into Base64 format. Base64 is mime-word safe
-     *
-     * @param {String} str String to be encoded into Base64
-     * @param {String} [charset="UTF-8"] Destination charset
-     * @return {String} Base64 encoded string
-     */
-
-    function encodeBase64(str, charset) {
-        return module.exports.mimeFunctions.encodeBase64(str, charset);
-    }
-
-    /**
-     * Decodes a string from Base64 format
-     *
-     * @param {String} str String to be decoded from Base64
-     * @param {String} [charset="UTF-8"] Source charset
-     * @return {String} Decoded string
-     */
-
-    function decodeBase64(str, charset) {
-        return module.exports.mimeFunctions.decodeBase64(str, "utf-8", charset).toString("utf-8");
-    }
-
-    /**
-     * Parses names and addresses from a from, to, cc or bcc line
-     * For example: 'Andris Reinman <andris@tr.ee>, someone@else.com'
-     * will be parsed into: [{name:"Andris Reinman", address:"andris@tr.ee"}, {address: "someone@else.com"}]
-     *
-     * @param {String|Array} addresses Address line string or an array of strings
-     * @return {Array} An array of parsed e-mails addresses in the form of [{name, address}]
-     */
-
-    function parseAddresses(addresses) {
-        return [].concat.apply([], [].concat(addresses).map(addressparser)).map(function(address) {
-            address.name = module.exports.parseMimeWords(address.name);
-            return address;
-        });
-    }
-
-    /**
-     * Parses header lines into an array of objects. Output: {'x-header': ['value']}
-     *
-     * @param {String} headers Full header part to be parsed
-     * @return {Object} Parsed headers
-     */
-
-    function parseHeaders(headers) {
-        return module.exports.mimeFunctions.parseHeaderLines(headers);
-    }
-
-    /**
-     * Parses a header line to search for additional parameters. For example
-     *     parseHeaderLine('text/plain; charset=utf-8')
-     * will be parsed into
-     *     {defaultValue: 'text/plain', charset: 'utf-8'}
-     *
-     * @param {String} line Single header value without key part to be parsed
-     * @return {Object} Parsed value
-     */
-
-    function parseHeaderLine(line) {
-        if (!line)
-            return {};
-        var result = {}, parts = line.split(";"),
-            pos;
-        for (var i = 0, len = parts.length; i < len; i++) {
-            pos = parts[i].indexOf("=");
-            if (pos < 0) {
-                result[!i ? "defaultValue" : "i-" + i] = parts[i].trim();
-            } else {
-                result[parts[i].substr(0, pos).trim().toLowerCase()] = parts[i].substr(pos + 1).trim();
-            }
-        }
-        return result;
-    }
-
     mimeFunctions = {
-
         mimeEncode: function(str, toCharset, fromCharset) {
             toCharset = toCharset || "UTF-8";
             fromCharset = fromCharset || "UTF-8";
@@ -484,8 +302,188 @@ define(function(require) {
         },
 
         parseAddresses: addressparser
-
     };
+
+    /**
+     * Folds a long line according to the RFC 5322 http://tools.ietf.org/html/rfc5322#section-2.1.1
+     *
+     * @param {String} str Mime string that might need folding
+     * @param {Number} [maxLength=76] max length for a line
+     * @param {Boolean} [foldAnywhere] If true, can fold at any location (ie. in base64)
+     * @param {Boolean} [afterSpace] If true fold after the space (default is before)
+     * @return {String} Folded string
+     */
+
+    function foldLine(str, maxLength, foldAnywhere, afterSpace, lineMargin) {
+        if (foldAnywhere) {
+            return addBase64SoftLinebreaks(str, maxLength || 76);
+        }
+        return mimeFunctions.foldLine(str, maxLength, !! afterSpace, lineMargin);
+    }
+
+    /**
+     * Encodes a string into mime encoded word format http://en.wikipedia.org/wiki/MIME#Encoded-Word
+     *
+     * @param {String} str String to be encoded
+     * @param {String} encoding Encoding Q for quoted printable or B for base64
+     * @param {String} [charset="UTF-8"] Charset to be used
+     * @param {Number} [maxLength] If set, split on maxLength
+     * @return {String} Mime word encoded string
+     */
+
+    function encodeMimeWord(str, encoding, charset, maxLength) {
+        return mimeFunctions.encodeMimeWord(str, encoding, maxLength || 0, charset);
+    }
+
+    /**
+     * Encodes need parts of a string to mime word format
+     *
+     * @param {String} str String to be encoded
+     * @param {String} encoding Encoding Q for quoted printable or B for base64
+     * @param {Number} [maxLength] If set, split on maxLength
+     * @param {String} [charset="UTF-8"] Charset to be used
+     * @return {String} String with possible mime word encoded parts
+     */
+
+    function encodeMimeWords(str, encoding, maxLength, charset) {
+        return mimeFunctions.encodeMimeWords(str, encoding, maxLength || 0, charset);
+    }
+
+    /**
+     * Decodes a string from mime encoded word
+     *
+     * @param {String} str Mime word encoded string
+     * @return {String} Decoded string
+     */
+
+    function decodeMimeWord(str) {
+        return mimeFunctions.decodeMimeWord(str).toString("utf-8");
+    }
+
+    /**
+     * Decodes all mime words from a string to an unencoded string
+     *
+     * @param {String} str String that may include mime words
+     * @return {String} Unencoded string
+     */
+
+    function parseMimeWords(str) {
+        return mimeFunctions.decodeMimeWords(str).toString("utf-8");
+    }
+
+    /**
+     * Encodes a string into Quoted-printable format. Maximum line length for the
+     * encoded string is always 76+2 bytes
+     *
+     * @param {String} str String to be encoded into Quoted-printable
+     * @param {Boolean} [mimeWord] legacy parameter, not used
+     * @param {String} [charset="UTF-8"] Destination charset
+     * @return {String} Quoted printable encoded string
+     */
+
+    function encodeQuotedPrintable(str, mimeWord, charset) {
+        if (typeof mimeWord == "string" && !charset) {
+            charset = mimeWord;
+            mimeWord = undefined;
+        }
+        return mimeFunctions.encodeQuotedPrintable(str, charset);
+    }
+
+    /**
+     * Decodes a string from Quoted-printable format
+     *
+     * @param {String} str String to be decoded from Quoted-printable
+     * @param {Boolean} [mimeWord] legacy parameter, not used
+     * @param {String} [charset="UTF-8"] Source charset
+     * @return {String} Decoded string
+     */
+
+    function decodeQuotedPrintable(str, mimeWord, charset) {
+        if (typeof mimeWord == "string" && !charset) {
+            charset = mimeWord;
+            mimeWord = undefined;
+        }
+        charset = (charset || "").toString().toUpperCase().trim();
+        var decodedString = mimeFunctions.decodeQuotedPrintable(str, "utf-8", charset);
+        return charset == "BINARY" ? decodedString : decodedString.toString("utf-8");
+    }
+
+    /**
+     * Encodes a string into Base64 format. Base64 is mime-word safe
+     *
+     * @param {String} str String to be encoded into Base64
+     * @param {String} [charset="UTF-8"] Destination charset
+     * @return {String} Base64 encoded string
+     */
+
+    function encodeBase64(str, charset) {
+        return mimeFunctions.encodeBase64(str, charset);
+    }
+
+    /**
+     * Decodes a string from Base64 format
+     *
+     * @param {String} str String to be decoded from Base64
+     * @param {String} [charset="UTF-8"] Source charset
+     * @return {String} Decoded string
+     */
+
+    function decodeBase64(str, charset) {
+        return mimeFunctions.decodeBase64(str, "utf-8", charset).toString("utf-8");
+    }
+
+    /**
+     * Parses names and addresses from a from, to, cc or bcc line
+     * For example: 'Andris Reinman <andris@tr.ee>, someone@else.com'
+     * will be parsed into: [{name:"Andris Reinman", address:"andris@tr.ee"}, {address: "someone@else.com"}]
+     *
+     * @param {String|Array} addresses Address line string or an array of strings
+     * @return {Array} An array of parsed e-mails addresses in the form of [{name, address}]
+     */
+
+    function parseAddresses(addresses) {
+        return [].concat.apply([], [].concat(addresses).map(addressparser)).map(function(address) {
+            address.name = parseMimeWords(address.name);
+            return address;
+        });
+    }
+
+    /**
+     * Parses header lines into an array of objects. Output: {'x-header': ['value']}
+     *
+     * @param {String} headers Full header part to be parsed
+     * @return {Object} Parsed headers
+     */
+
+    function parseHeaders(headers) {
+        return mimeFunctions.parseHeaderLines(headers);
+    }
+
+    /**
+     * Parses a header line to search for additional parameters. For example
+     *     parseHeaderLine('text/plain; charset=utf-8')
+     * will be parsed into
+     *     {defaultValue: 'text/plain', charset: 'utf-8'}
+     *
+     * @param {String} line Single header value without key part to be parsed
+     * @return {Object} Parsed value
+     */
+
+    function parseHeaderLine(line) {
+        if (!line)
+            return {};
+        var result = {}, parts = line.split(";"),
+            pos;
+        for (var i = 0, len = parts.length; i < len; i++) {
+            pos = parts[i].indexOf("=");
+            if (pos < 0) {
+                result[!i ? "defaultValue" : "i-" + i] = parts[i].trim();
+            } else {
+                result[parts[i].substr(0, pos).trim().toLowerCase()] = parts[i].substr(pos + 1).trim();
+            }
+        }
+        return result;
+    }
 
     // Lines can't be longer that 76 + <CR><LF> = 78 bytes
     // http://tools.ietf.org/html/rfc2045#section-6.7
