@@ -1,7 +1,7 @@
 {
     "name": "mimelib",
     "description": "MIME functions to encode/decode e-mails etc.",
-    "version": "0.2.13-dev",
+    "version": "0.3.0",
     "author": "Andris Reinman",
     "homepage": "http://github.com/andris9/mimelib",
     "maintainers": [{
@@ -24,10 +24,10 @@
         "url": "http://github.com/andris9/mimelib/blob/master/LICENSE"
     }],
     "dependencies": {
-        "addressparser": "https://github.com/whiteout-io/addressparser/tarball/amd",
+        "addressparser": "https://github.com/whiteout-io/addressparser/tarball/v0.1.2",
         "amdefine": ">=0.0.8",
-        "node-shims": "https://github.com/whiteout-io/node-shims/tarball/master",
-        "encoding": "https://github.com/whiteout-io/encoding/tarball/amd"
+        "node-shims": "https://github.com/whiteout-io/node-shims/tarball/v0.1.1",
+        "encoding": "https://github.com/whiteout-io/encoding/tarball/v0.2.0"
     },
     "devDependencies": {
         "nodeunit": "*"
