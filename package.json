@@ -26,8 +26,8 @@
     "dependencies": {
         "addressparser": "https://github.com/whiteout-io/addressparser/tarball/v0.1.2",
         "amdefine": ">=0.0.8",
-        "node-shims": "https://github.com/whiteout-io/node-shims/tarball/v0.1.1",
-        "encoding": "https://github.com/whiteout-io/encoding/tarball/v0.2.0"
+        "node-shims": "git+https://github.com/nifgraup/node-shims#6d803c668577a0a0db5148ab20a10a4ea9b41abd",
+        "encoding": "git+https://github.com/nifgraup/encoding#932404364ec2f86efe72acb417a5221e9b2d5fcf"
     },
     "devDependencies": {
         "nodeunit": "*"
